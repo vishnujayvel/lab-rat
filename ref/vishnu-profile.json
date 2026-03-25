@@ -1,0 +1,90 @@
+{
+  "identity": {
+    "role": "Senior Engineer transitioning to Staff+",
+    "side_business": "Exponent Coaching — mock interview coach",
+    "philosophy": "Elegance over hacks. Async/parallel execution by default.",
+    "adhd": true
+  },
+  "expertise": {
+    "languages": ["Python", "TypeScript", "JavaScript", "Go", "Bash"],
+    "specialization": ["MCP server development", "backend systems architecture", "AI-native applications"],
+    "patterns": ["XDG Base Directory Spec", "two-layer architecture", "config-driven systems", "Director/Actor/Critic"],
+    "databases": ["SQLite", "DuckDB", "DoltDB", "LanceDB"],
+    "testing": ["Pytest", "Jest", "custom HookRunner"]
+  },
+  "skills_ecosystem": {
+    "count": 39,
+    "categories": {
+      "interview_prep": ["interview-coach", "practice-tracker", "formation-fellowship", "interview-retro"],
+      "daily_planning": ["daily-copilot", "life-metrics", "life-planner", "dyl-coach", "resilience-ritual"],
+      "job_search": ["job-hunt-copilot", "email-communication", "email-digest"],
+      "knowledge_management": ["obsidian-agent", "flashcard-skill", "kindle", "deep-research", "conversation-xray"],
+      "data_finance": ["fitbit-analytics", "personal-finance", "untax", "net-worth-tracker"],
+      "dev_tools": ["hookwise", "openspec-loki-loop", "loki-mode", "skill-creator", "claude-settings"],
+      "content_specialized": ["sd-arcade", "eval-runner", "parallel-qa", "journaling-agent", "humanizer", "travel-agent", "travel-planner"]
+    }
+  },
+  "mcp_servers": [
+    "practice-tracker", "obsidian-para", "life-metrics", "untax", "job-tracker",
+    "personal-finance", "splitwise", "google-workspace", "github", "obsidian-mcp",
+    "playwright", "excalidraw", "gitnexus", "macos-automator", "readwise", "seats-aero"
+  ],
+  "interests": {
+    "primary": ["running", "personal_finance", "career_growth", "interview_mastery"],
+    "secondary": ["travel", "life_metrics", "knowledge_management"],
+    "always_relevant": ["running", "exercise", "health", "fitness"]
+  },
+  "matching_rules": {
+    "strong_match": {
+      "score_range": [0.8, 1.0],
+      "criteria": [
+        "MCP server repos with tests + type safety",
+        "Python projects (DuckDB, SQLite, data pipelines)",
+        "TypeScript/Node with test coverage",
+        "Agent/AI-native applications (Claude API, Agent Skills)",
+        "Claude Code skills, hooks, or extensions",
+        "Personal finance, tax, or health data automation",
+        "Behavioral interview or hiring analysis",
+        "Fitness/running analytics",
+        "CLI tools or automation frameworks",
+        "YAML-based dispatchers or config-driven systems",
+        "Obsidian/markdown-native tools or PKM"
+      ]
+    },
+    "medium_match": {
+      "score_range": [0.5, 0.7],
+      "criteria": [
+        "Interview platforms or LeetCode integrations",
+        "Multi-agent coordination or parallel execution",
+        "Data visualization (Sankey, funnel charts)",
+        "Travel planning or award flight optimization",
+        "Decision trees or recommendation systems",
+        "Testing frameworks or quality gates"
+      ]
+    },
+    "weak_match": {
+      "score_range": [0.2, 0.4],
+      "criteria": [
+        "Frontend-only projects",
+        "Projects without tests or quality gates",
+        "Closed-source or proprietary systems"
+      ]
+    },
+    "hard_pass": {
+      "score": 0.0,
+      "criteria": [
+        "Cryptocurrency/blockchain",
+        "Social media engagement bots",
+        "Surveillance without consent",
+        "Projects lacking elegance, tests, or docs"
+      ]
+    }
+  },
+  "scoring_dimensions": [
+    {"name": "overlap", "description": "Duplicates something already built", "signal": "negative"},
+    {"name": "extension", "description": "Adds capability to an existing skill", "signal": "strong_positive"},
+    {"name": "gap_fill", "description": "Solves a known pain point", "signal": "strong_positive"},
+    {"name": "aesthetic_fit", "description": "Matches tech taste (XDG, elegance, ADHD-friendly)", "signal": "moderate"},
+    {"name": "learning_value", "description": "Patterns worth extracting even if not installable", "signal": "reference"}
+  ]
+}

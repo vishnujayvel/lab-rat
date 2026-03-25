@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab Rat - Tech Scout Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              850: '#172033',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Smooth expand/collapse */
+    .collapse-section {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.25s ease-out;
+    }
+    .collapse-section.open {
+      grid-template-rows: 1fr;
+    }
+    .collapse-section > div {
+      overflow: hidden;
+    }
+
+    /* Relevance bar animation */
+    .relevance-bar {
+      transition: width 0.6s ease-out;
+    }
+
+    /* Card hover lift */
+    .card-hover {
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Timeline dot pulse */
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(96, 165, 250, 0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(96, 165, 250, 0); }
+    }
+    .timeline-dot-latest {
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    /* Verdict badge glow */
+    .verdict-install { box-shadow: 0 0 12px rgba(74, 222, 128, 0.3); }
+    .verdict-later { box-shadow: 0 0 12px rgba(251, 191, 36, 0.3); }
+    .verdict-skip { box-shadow: 0 0 12px rgba(248, 113, 113, 0.3); }
+    .verdict-reference { box-shadow: 0 0 12px rgba(96, 165, 250, 0.3); }
+  </style>
+</head>
+<body class="bg-slate-900 text-gray-200 min-h-screen">
+
+  <!-- DATA BLOCK: Updated by Lab Rat skill — NEVER use fetch() -->
+  <script>
+    // This block is updated by the Lab Rat skill
+    window.REPORTS_DATA = [
+      {
+        "id": "claude-code-memory-skill",
+        "repo": "anthropics/claude-code-memory",
+        "source_url": "https://github.com/anthropics/claude-code-memory",
+        "classification": "skill",
+        "security": {
+          "verdict": "safe",
+          "findings": ["No secrets detected", "No obfuscated code", "Clean dependency tree"]
+        },
+        "sandbox": {
+          "cloned": true,
+          "tests_ran": true,
+          "tests_passed": true,
+          "demo_output": "Skill loaded successfully. Memory store initialized at ~/.local/share/claude-memory/store.json. 3 test memories stored and retrieved correctly."
+        },
+        "relevance": {
+          "score": 0.92,
+          "for_you": "Gives your Claude Code sessions persistent memory across conversations \u2014 pairs perfectly with your deep-research workflow.",
+          "overlaps_with": ["mem0"],
+          "extends": ["deep-research skill"],
+          "new_capability": "Cross-session context retention without manual CLAUDE.md updates"
+        },
+        "verdict": "install",
+        "liked": ["Clean API", "Zero config", "XDG-compliant paths"],
+        "disliked": ["No encryption at rest"],
+        "status": "reviewed",
+        "timeline": [
+          {"event": "bookmarked", "at": "2026-03-22T09:15:00Z"},
+          {"event": "security_passed", "at": "2026-03-22T09:17:30Z"},
+          {"event": "sandbox_tested", "at": "2026-03-22T09:20:45Z"},
+          {"event": "reviewed", "at": "2026-03-22T09:25:00Z"}
+        ],
+        "notes": "Consider pairing with obsidian-mcp for knowledge graph sync."
+      },
+      {
+        "id": "mcp-server-sqlite",
+        "repo": "benborla/mcp-server-sqlite",
+        "source_url": "https://github.com/benborla/mcp-server-sqlite",
+        "classification": "tool",
+        "security": {
+          "verdict": "caution",
+          "findings": ["No secrets detected", "Uses eval() in query builder \u2014 review needed", "19 npm dependencies"]
+        },
+        "sandbox": {
+          "cloned": true,
+          "tests_ran": true,
+          "tests_passed": false,
+          "demo_output": "Server starts on stdio. 2/5 tests failing: schema introspection broken on WAL mode databases. Query execution works for basic SELECT/INSERT."
+        },
+        "relevance": {
+          "score": 0.65,
+          "for_you": "Could replace your janky JSON file storage in lab-rat and job-tracker with proper SQLite \u2014 but needs polish first.",
+          "overlaps_with": ["reports.json pattern"],
+          "extends": [],
+          "new_capability": "SQL-powered MCP queries for any local data"
+        },
+        "verdict": "later",
+        "liked": ["Good concept", "Active maintainer"],
+        "disliked": ["Failing tests", "eval() usage", "Heavy deps"],
+        "status": "reviewed",
+        "timeline": [
+          {"event": "bookmarked", "at": "2026-03-23T14:30:00Z"},
+          {"event": "security_flagged", "at": "2026-03-23T14:32:10Z"},
+          {"event": "sandbox_tested", "at": "2026-03-23T14:38:00Z"},
+          {"event": "reviewed", "at": "2026-03-23T14:42:00Z"}
+        ],
+        "notes": "Revisit after maintainer addresses eval() concern (issue #47)."
+      },
+      {
+        "id": "awesome-claude-code",
+        "repo": "saharmor/awesome-claude-code",
+        "source_url": "https://github.com/saharmor/awesome-claude-code",
+        "classification": "reference",
+        "security": {
+          "verdict": "safe",
+          "findings": ["Markdown-only repo", "No executable code"]
+        },
+        "sandbox": {
+          "cloned": true,
+          "tests_ran": false,
+          "tests_passed": false,
+          "demo_output": "N/A \u2014 reference repo, no executable content."
+        },
+        "relevance": {
+          "score": 0.45,
+          "for_you": "Curated list of Claude Code extensions and tips. Good for discovery when you want new skills to evaluate.",
+          "overlaps_with": [],
+          "extends": ["lab-rat discovery pipeline"],
+          "new_capability": "Periodic scan target for new repos to evaluate"
+        },
+        "verdict": "reference",
+        "liked": ["Well organized", "Active community"],
+        "disliked": ["No quality filtering"],
+        "status": "reviewed",
+        "timeline": [
+          {"event": "bookmarked", "at": "2026-03-24T11:00:00Z"},
+          {"event": "security_passed", "at": "2026-03-24T11:01:00Z"},
+          {"event": "reviewed", "at": "2026-03-24T11:05:00Z"}
+        ],
+        "notes": "Add to weekly scan list for new entries."
+      }
+    ];
+  </script>
+
+  <!-- MAIN APP -->
+  <div x-data="labRatApp()" x-cloak class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- HEADER -->
+    <header class="mb-8">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div class="flex items-center gap-3">
+          <span class="text-4xl">&#x1F400;</span>
+          <div>
+            <h1 class="text-3xl font-bold text-white tracking-tight">Lab Rat</h1>
+            <p class="text-sm text-gray-400 mt-0.5">Personal tech scout &mdash; triage, test, decide</p>
+          </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="flex items-center gap-4 text-sm">
+          <div class="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg">
+            <span class="text-gray-400">Explored</span>
+            <span class="font-semibold text-white" x-text="reports.length"></span>
+          </div>
+          <div class="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg">
+            <span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
+            <span class="font-semibold text-green-400" x-text="countByVerdict('install')"></span>
+          </div>
+          <div class="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg">
+            <span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span>
+            <span class="font-semibold text-amber-400" x-text="countByVerdict('later')"></span>
+          </div>
+          <div class="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg">
+            <span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span>
+            <span class="font-semibold text-red-400" x-text="countByVerdict('skip')"></span>
+          </div>
+          <div class="flex items-center gap-1.5 bg-slate-800 px-3 py-1.5 rounded-lg">
+            <span class="w-2 h-2 rounded-full bg-blue-400 inline-block"></span>
+            <span class="font-semibold text-blue-400" x-text="countByVerdict('reference')"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTERS -->
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <!-- Verdict Filter -->
+        <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-1">
+          <template x-for="v in ['all', 'install', 'later', 'skip', 'reference']" :key="v">
+            <button
+              @click="filterVerdict = v"
+              :class="{
+                'bg-slate-700 text-white shadow-sm': filterVerdict === v,
+                'text-gray-400 hover:text-gray-200': filterVerdict !== v
+              }"
+              class="px-3 py-1 rounded-md text-xs font-medium capitalize transition-colors"
+              x-text="v"
+            ></button>
+          </template>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-1">
+          <template x-for="c in ['all', 'skill', 'tool', 'reference', 'inspiration']" :key="c">
+            <button
+              @click="filterCategory = c"
+              :class="{
+                'bg-slate-700 text-white shadow-sm': filterCategory === c,
+                'text-gray-400 hover:text-gray-200': filterCategory !== c
+              }"
+              class="px-3 py-1 rounded-md text-xs font-medium capitalize transition-colors"
+              x-text="c"
+            ></button>
+          </template>
+        </div>
+
+        <!-- Sort -->
+        <div class="flex items-center gap-1 bg-slate-800 rounded-lg p-1 ml-auto">
+          <span class="text-xs text-gray-500 px-2">Sort</span>
+          <button
+            @click="sortBy = 'date'"
+            :class="{ 'bg-slate-700 text-white shadow-sm': sortBy === 'date', 'text-gray-400 hover:text-gray-200': sortBy !== 'date' }"
+            class="px-3 py-1 rounded-md text-xs font-medium transition-colors"
+          >Date</button>
+          <button
+            @click="sortBy = 'score'"
+            :class="{ 'bg-slate-700 text-white shadow-sm': sortBy === 'score', 'text-gray-400 hover:text-gray-200': sortBy !== 'score' }"
+            class="px-3 py-1 rounded-md text-xs font-medium transition-colors"
+          >Score</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- EMPTY STATE -->
+    <template x-if="reports.length === 0">
+      <div class="flex flex-col items-center justify-center py-32 text-center">
+        <span class="text-6xl mb-6">&#x1F9EA;</span>
+        <h2 class="text-xl font-semibold text-gray-300 mb-2">No explorations yet</h2>
+        <p class="text-gray-500 max-w-md">
+          Run <code class="bg-slate-800 text-green-400 px-2 py-0.5 rounded text-sm">/lab explore &lt;url&gt;</code> to get started!
+        </p>
+        <p class="text-gray-600 text-sm mt-4">Lab Rat will triage, sandbox-test, and score repos for you.</p>
+      </div>
+    </template>
+
+    <!-- CARD GRID -->
+    <template x-if="reports.length > 0">
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <template x-for="report in filteredReports()" :key="report.id">
+          <div class="bg-slate-800 rounded-xl border border-slate-700/50 overflow-hidden card-hover">
+
+            <!-- Card Header -->
+            <div class="p-5 pb-3">
+              <div class="flex items-start justify-between gap-3 mb-3">
+                <div class="min-w-0">
+                  <a :href="report.source_url" target="_blank" rel="noopener"
+                     class="text-white font-semibold hover:text-blue-400 transition-colors text-lg leading-tight block truncate"
+                     x-text="report.repo"></a>
+                </div>
+                <!-- Verdict Badge -->
+                <span
+                  :class="verdictBadgeClass(report.verdict)"
+                  class="shrink-0 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+                  x-text="report.verdict"
+                ></span>
+              </div>
+
+              <!-- Classification + Security badges -->
+              <div class="flex items-center gap-2 mb-3">
+                <span class="bg-slate-700 text-gray-300 px-2 py-0.5 rounded text-xs font-medium capitalize" x-text="report.classification"></span>
+                <span
+                  :class="securityBadgeClass(report.security.verdict)"
+                  class="px-2 py-0.5 rounded text-xs font-medium uppercase"
+                  x-text="report.security.verdict"
+                ></span>
+              </div>
+
+              <!-- For You -->
+              <p class="text-gray-300 text-sm italic leading-relaxed mb-4" x-text="report.relevance.for_you"></p>
+
+              <!-- Relevance Score Bar -->
+              <div class="mb-3">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs text-gray-500">Relevance</span>
+                  <span class="text-xs font-semibold" :class="scoreColor(report.relevance.score)"
+                        x-text="Math.round(report.relevance.score * 100) + '%'"></span>
+                </div>
+                <div class="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                  <div
+                    class="h-full rounded-full relevance-bar"
+                    :class="scoreBarColor(report.relevance.score)"
+                    :style="'width: ' + (report.relevance.score * 100) + '%'"
+                  ></div>
+                </div>
+              </div>
+
+              <!-- Liked / Disliked Tags -->
+              <div class="flex flex-wrap gap-1.5 mb-1" x-show="report.liked.length > 0 || report.disliked.length > 0">
+                <template x-for="tag in report.liked" :key="'like-' + tag">
+                  <span class="inline-flex items-center gap-1 bg-green-400/10 text-green-400 px-2 py-0.5 rounded-full text-xs">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span x-text="tag"></span>
+                  </span>
+                </template>
+                <template x-for="tag in report.disliked" :key="'dislike-' + tag">
+                  <span class="inline-flex items-center gap-1 bg-red-400/10 text-red-400 px-2 py-0.5 rounded-full text-xs">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <span x-text="tag"></span>
+                  </span>
+                </template>
+              </div>
+            </div>
+
+            <!-- Collapsible Sections -->
+            <div class="border-t border-slate-700/50">
+
+              <!-- Security Details -->
+              <div x-data="{ open: false }" class="border-b border-slate-700/30">
+                <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-2.5 text-xs font-medium text-gray-400 hover:text-gray-200 transition-colors">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    Security Details
+                  </span>
+                  <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div :class="{ 'open': open }" class="collapse-section">
+                  <div>
+                    <ul class="px-5 pb-3 space-y-1">
+                      <template x-for="finding in report.security.findings" :key="finding">
+                        <li class="text-xs text-gray-400 flex items-start gap-2">
+                          <span class="mt-1 w-1 h-1 rounded-full shrink-0" :class="report.security.verdict === 'safe' ? 'bg-green-400' : report.security.verdict === 'caution' ? 'bg-amber-400' : 'bg-red-400'"></span>
+                          <span x-text="finding"></span>
+                        </li>
+                      </template>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sandbox Results -->
+              <div x-data="{ open: false }" class="border-b border-slate-700/30">
+                <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-2.5 text-xs font-medium text-gray-400 hover:text-gray-200 transition-colors">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    Sandbox Results
+                    <span x-show="report.sandbox.tests_ran"
+                          :class="report.sandbox.tests_passed ? 'bg-green-400/20 text-green-400' : 'bg-red-400/20 text-red-400'"
+                          class="px-1.5 py-0.5 rounded text-xs"
+                          x-text="report.sandbox.tests_passed ? 'PASS' : 'FAIL'"></span>
+                  </span>
+                  <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div :class="{ 'open': open }" class="collapse-section">
+                  <div>
+                    <div class="px-5 pb-3 space-y-2">
+                      <div class="flex items-center gap-3 text-xs">
+                        <span class="flex items-center gap-1" :class="report.sandbox.cloned ? 'text-green-400' : 'text-gray-500'">
+                          <span x-text="report.sandbox.cloned ? '\u2713' : '\u2717'"></span> Cloned
+                        </span>
+                        <span class="flex items-center gap-1" :class="report.sandbox.tests_ran ? 'text-green-400' : 'text-gray-500'">
+                          <span x-text="report.sandbox.tests_ran ? '\u2713' : '\u2014'"></span> Tests ran
+                        </span>
+                        <span class="flex items-center gap-1" :class="report.sandbox.tests_passed ? 'text-green-400' : report.sandbox.tests_ran ? 'text-red-400' : 'text-gray-500'">
+                          <span x-text="report.sandbox.tests_passed ? '\u2713' : report.sandbox.tests_ran ? '\u2717' : '\u2014'"></span> Tests passed
+                        </span>
+                      </div>
+                      <div x-show="report.sandbox.demo_output" class="bg-slate-900 rounded-lg p-3 text-xs text-gray-400 font-mono leading-relaxed" x-text="report.sandbox.demo_output"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Integration Suggestions -->
+              <div x-data="{ open: false }" class="border-b border-slate-700/30"
+                   x-show="report.relevance.overlaps_with.length > 0 || report.relevance.extends.length > 0 || report.relevance.new_capability">
+                <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-2.5 text-xs font-medium text-gray-400 hover:text-gray-200 transition-colors">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Integration Suggestions
+                  </span>
+                  <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div :class="{ 'open': open }" class="collapse-section">
+                  <div>
+                    <div class="px-5 pb-3 space-y-2 text-xs">
+                      <div x-show="report.relevance.overlaps_with.length > 0" class="flex items-start gap-2">
+                        <span class="text-amber-400 shrink-0 mt-0.5">Overlaps:</span>
+                        <span class="text-gray-400" x-text="report.relevance.overlaps_with.join(', ')"></span>
+                      </div>
+                      <div x-show="report.relevance.extends.length > 0" class="flex items-start gap-2">
+                        <span class="text-green-400 shrink-0 mt-0.5">Extends:</span>
+                        <span class="text-gray-400" x-text="report.relevance.extends.join(', ')"></span>
+                      </div>
+                      <div x-show="report.relevance.new_capability" class="flex items-start gap-2">
+                        <span class="text-blue-400 shrink-0 mt-0.5">New:</span>
+                        <span class="text-gray-400" x-text="report.relevance.new_capability"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Timeline -->
+              <div x-data="{ open: false }">
+                <button @click="open = !open" class="w-full flex items-center justify-between px-5 py-2.5 text-xs font-medium text-gray-400 hover:text-gray-200 transition-colors">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    Timeline
+                  </span>
+                  <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div :class="{ 'open': open }" class="collapse-section">
+                  <div>
+                    <div class="px-5 pb-4">
+                      <div class="relative pl-4 border-l-2 border-slate-700 space-y-3">
+                        <template x-for="(event, idx) in report.timeline" :key="event.event + event.at">
+                          <div class="relative">
+                            <div class="absolute -left-[calc(1rem+5px)] top-1 w-2 h-2 rounded-full border-2 border-slate-700"
+                                 :class="idx === report.timeline.length - 1 ? 'bg-blue-400 border-blue-400 timeline-dot-latest' : 'bg-slate-600'"></div>
+                            <div class="flex items-baseline justify-between gap-2">
+                              <span class="text-xs font-medium text-gray-300 capitalize" x-text="event.event.replace(/_/g, ' ')"></span>
+                              <span class="text-xs text-gray-600 tabular-nums" x-text="formatTime(event.at)"></span>
+                            </div>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notes (if present) -->
+            <div x-show="report.notes" class="px-5 py-2.5 border-t border-slate-700/50 bg-slate-850">
+              <p class="text-xs text-gray-500 italic" x-text="report.notes"></p>
+            </div>
+
+            <!-- Action Button -->
+            <div class="px-5 py-3 border-t border-slate-700/50">
+              <button
+                :class="actionButtonClass(report.verdict)"
+                class="w-full py-2 rounded-lg text-sm font-semibold transition-all hover:brightness-110 active:scale-[0.98]"
+                x-text="actionButtonText(report.verdict)"
+              ></button>
+            </div>
+
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <!-- Footer -->
+    <footer class="mt-12 pb-8 text-center">
+      <p class="text-xs text-gray-600">Lab Rat &mdash; triage, test, decide &mdash; built for the ADHD brain</p>
+    </footer>
+  </div>
+
+  <!-- APP LOGIC -->
+  <script>
+    function labRatApp() {
+      return {
+        reports: window.REPORTS_DATA || [],
+        filterVerdict: 'all',
+        filterCategory: 'all',
+        sortBy: 'date',
+
+        countByVerdict(verdict) {
+          return this.reports.filter(r => r.verdict === verdict).length;
+        },
+
+        filteredReports() {
+          let results = [...this.reports];
+
+          if (this.filterVerdict !== 'all') {
+            results = results.filter(r => r.verdict === this.filterVerdict);
+          }
+          if (this.filterCategory !== 'all') {
+            results = results.filter(r => r.classification === this.filterCategory);
+          }
+
+          if (this.sortBy === 'score') {
+            results.sort((a, b) => b.relevance.score - a.relevance.score);
+          } else {
+            // Sort by most recent timeline event
+            results.sort((a, b) => {
+              const aLast = a.timeline.length ? new Date(a.timeline[a.timeline.length - 1].at) : new Date(0);
+              const bLast = b.timeline.length ? new Date(b.timeline[b.timeline.length - 1].at) : new Date(0);
+              return bLast - aLast;
+            });
+          }
+
+          return results;
+        },
+
+        verdictBadgeClass(verdict) {
+          const map = {
+            install: 'bg-green-400/15 text-green-400 verdict-install',
+            later: 'bg-amber-400/15 text-amber-400 verdict-later',
+            skip: 'bg-red-400/15 text-red-400 verdict-skip',
+            reference: 'bg-blue-400/15 text-blue-400 verdict-reference',
+          };
+          return map[verdict] || 'bg-gray-400/15 text-gray-400';
+        },
+
+        securityBadgeClass(verdict) {
+          const map = {
+            safe: 'bg-green-400/10 text-green-400',
+            caution: 'bg-amber-400/10 text-amber-400',
+            block: 'bg-red-400/10 text-red-400',
+          };
+          return map[verdict] || 'bg-gray-400/10 text-gray-400';
+        },
+
+        scoreColor(score) {
+          if (score >= 0.8) return 'text-green-400';
+          if (score >= 0.5) return 'text-amber-400';
+          return 'text-gray-400';
+        },
+
+        scoreBarColor(score) {
+          if (score >= 0.8) return 'bg-green-400';
+          if (score >= 0.5) return 'bg-amber-400';
+          return 'bg-gray-500';
+        },
+
+        actionButtonText(verdict) {
+          const map = {
+            install: 'Install Skill',
+            later: 'Bookmark for Later',
+            skip: 'Dismiss',
+            reference: 'Save Reference',
+          };
+          return map[verdict] || 'View';
+        },
+
+        actionButtonClass(verdict) {
+          const map = {
+            install: 'bg-green-500 text-white',
+            later: 'bg-amber-500/20 text-amber-400 border border-amber-500/30',
+            skip: 'bg-slate-700 text-gray-400',
+            reference: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
+          };
+          return map[verdict] || 'bg-slate-700 text-gray-400';
+        },
+
+        formatTime(isoString) {
+          if (!isoString) return '';
+          const d = new Date(isoString);
+          const month = d.toLocaleString('en', { month: 'short' });
+          const day = d.getDate();
+          const hour = d.getHours().toString().padStart(2, '0');
+          const min = d.getMinutes().toString().padStart(2, '0');
+          return `${month} ${day}, ${hour}:${min}`;
+        },
+      };
+    }
+  </script>
+
+</body>
+</html>

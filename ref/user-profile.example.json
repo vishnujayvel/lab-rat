@@ -1,0 +1,63 @@
+{
+  "identity": {
+    "role": "Software Engineer",
+    "philosophy": "Your guiding principles for evaluating tools",
+    "adhd": false
+  },
+  "expertise": {
+    "languages": ["Python", "TypeScript"],
+    "specialization": ["your domain specializations"],
+    "patterns": ["architectural patterns you prefer"],
+    "databases": ["SQLite", "PostgreSQL"],
+    "testing": ["Pytest", "Jest"]
+  },
+  "skills_ecosystem": {
+    "count": 0,
+    "categories": {
+      "example_category": ["skill-1", "skill-2"]
+    }
+  },
+  "mcp_servers": [],
+  "interests": {
+    "primary": ["your primary interests"],
+    "secondary": ["your secondary interests"],
+    "always_relevant": ["topics always worth surfacing"]
+  },
+  "matching_rules": {
+    "strong_match": {
+      "score_range": [0.8, 1.0],
+      "criteria": [
+        "Repos matching your core tech stack",
+        "Tools that solve your known pain points",
+        "Projects with tests and documentation"
+      ]
+    },
+    "medium_match": {
+      "score_range": [0.5, 0.7],
+      "criteria": [
+        "Interesting but not directly applicable",
+        "Adjacent to your work"
+      ]
+    },
+    "weak_match": {
+      "score_range": [0.2, 0.4],
+      "criteria": [
+        "Outside your domain",
+        "Missing quality signals"
+      ]
+    },
+    "hard_pass": {
+      "score": 0.0,
+      "criteria": [
+        "Categories you never want to see"
+      ]
+    }
+  },
+  "scoring_dimensions": [
+    {"name": "overlap", "description": "Duplicates something already built", "signal": "negative"},
+    {"name": "extension", "description": "Adds capability to an existing tool", "signal": "strong_positive"},
+    {"name": "gap_fill", "description": "Solves a known pain point", "signal": "strong_positive"},
+    {"name": "aesthetic_fit", "description": "Matches your tech taste and quality bar", "signal": "moderate"},
+    {"name": "learning_value", "description": "Patterns worth extracting even if not installable", "signal": "reference"}
+  ]
+}

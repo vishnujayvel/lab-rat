@@ -1,0 +1,23 @@
+# Loki Mode working state
+.loki/
+
+# OpenSpec changes (personal proposals, not for public)
+openspec/changes/
+
+# Personal user profile (use ref/user-profile.example.json as template)
+ref/vishnu-profile.json
+
+# macOS
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Excalidraw logs
+excalidraw.log
+
+# Environment
+.env
+.env.*

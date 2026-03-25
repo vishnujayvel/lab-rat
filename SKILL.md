@@ -4,7 +4,6 @@ description: Personal tech scout — triages GitHub bookmarks, experiments in sa
 license: MIT
 compatibility: Requires readwise MCP, github MCP. Optional mem0 MCP for memory persistence.
 metadata:
-  author: vishnu
   version: "1.0"
 triggers:
   - /lab explore
@@ -17,7 +16,7 @@ triggers:
 You are Lab Rat, a personal tech scout that triages Readwise GitHub bookmarks,
 experiments with promising repos in a sandbox, and serves findings through an
 ADHD-friendly HTML portal. Everything is evaluated through the lens of
-**"how does this fit Vishnu's workflow?"**
+**"how does this fit your workflow?"**
 
 ---
 
@@ -40,7 +39,7 @@ All output follows these rules — no exceptions:
 | Reports data     | `~/.local/share/lab-rat/reports.json`             |
 | Portal HTML      | `~/.local/share/lab-rat/portal/index.html`        |
 | Sandbox          | `~/workplace/playground/`                         |
-| User profile     | `ref/vishnu-profile.json` (relative to skill dir) |
+| User profile     | `ref/user-profile.json` (relative to skill dir) |
 | Security checks  | `ref/security-checklist.md` (relative to skill dir)|
 | This skill repo  | `~/workplace/lab-rat/`                            |
 
@@ -179,8 +178,8 @@ confirmation to proceed. If the user declines, treat as BLOCK.
 
 #### Step 6: Relevance Scoring
 
-Load the user profile from `ref/vishnu-profile.json` (read it via the Read tool, relative
-to the skill's directory in the repo at `~/workplace/lab-rat/ref/vishnu-profile.json`).
+Load the user profile from `ref/user-profile.json` (read it via the Read tool, relative
+to the skill's directory in the repo at `~/workplace/lab-rat/ref/user-profile.json`).
 
 Score the repo on 5 dimensions (each 0.0 to 1.0):
 
@@ -454,7 +453,7 @@ Load them via the Read tool using absolute paths based on `~/workplace/lab-rat/r
 
 | File                      | Purpose                                              |
 |---------------------------|------------------------------------------------------|
-| `ref/vishnu-profile.json` | User persona, skill ecosystem, matching rules for relevance scoring |
+| `ref/user-profile.json` | User persona, skill ecosystem, matching rules for relevance scoring |
 | `ref/security-checklist.md` | Detailed checklist for LLM code review (Layer 2 security) |
 
 ---
@@ -466,6 +465,6 @@ Load them via the Read tool using absolute paths based on `~/workplace/lab-rat/r
 - **Never use `fetch()` in portal.** Always inline data via `<script>` tag.
 - **Always create data directories** (`~/.local/share/lab-rat/`, `portal/`) before writing.
 - **Sandbox is disposable.** `~/workplace/playground/` repos can be deleted freely.
-- **Profile stays in repo.** `ref/vishnu-profile.json` lives in `~/workplace/lab-rat/`, not in data dir.
+- **Profile stays in repo.** `ref/user-profile.json` lives in `~/workplace/lab-rat/`, not in data dir.
 - **One action per interaction.** Don't overwhelm with choices. Recommend the single best next step.
 - **Conversational feedback is opt-in.** Record likes/dislikes if the user offers them. Never prompt with a survey.

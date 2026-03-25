@@ -188,7 +188,7 @@ Score the repo on 5 dimensions (each 0.0 to 1.0):
 | **Overlap**       | Duplicates something already built? (higher = MORE overlap = negative) |
 | **Extension**     | Adds capability to an existing skill? (strong positive)         |
 | **Gap Fill**      | Solves a known pain point? (strong positive)                    |
-| **Aesthetic Fit** | Matches Vishnu's tech taste? (XDG, tests, elegance, clean API) |
+| **Aesthetic Fit** | Matches your tech taste? (XDG, tests, elegance, clean API) |
 | **Learning Value**| Patterns worth extracting even if not installable?              |
 
 Compute the composite `relevance.score` as:

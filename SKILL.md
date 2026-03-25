@@ -133,13 +133,15 @@ To perform the LLM review, read the key source files via `mcp__github__get_file_
 analyze them yourself. Focus on entry points: `index.js/ts`, `main.py`, `setup.py`, `package.json`
 scripts, and any `bin/` or `scripts/` directories.
 
-**Assign a verdict:**
+**Assign a verdict based on SECURITY concerns only** (see `ref/security-checklist.md`):
 
 | Verdict     | Meaning                                                  | Action              |
 |-------------|----------------------------------------------------------|---------------------|
-| **SAFE**    | No findings from either layer                            | Proceed to sandbox  |
-| **CAUTION** | Minor findings (e.g., broad permissions, no lockfile)    | Proceed with note   |
+| **SAFE**    | No security findings from either layer                   | Proceed to sandbox  |
+| **CAUTION** | Genuine security risk needing user judgment (eval on external input, undocumented network calls, native binaries without source) | Proceed with note |
 | **BLOCK**   | Critical findings (secrets, malicious code, exfiltration)| **NEVER clone**     |
+
+**Quality observations** (missing lockfile, no tests, large dep count, deployment scripts writing to expected paths) are **informational only** — note them in `security.findings[]` but they do NOT affect the verdict. A repo with no lockfile and no tests but clean security is **SAFE**, not CAUTION.
 
 Set `security.verdict`, `security.findings[]`, `security.scanned_at`.
 Record `{"event": "security_<verdict>", "at": "..."}` in timeline.

@@ -35,3 +35,17 @@ experiments with them in a sandbox, and serves findings through an ADHD-friendly
 - Test the skill by running `/lab explore` on known repos
 - Test the portal by opening index.html in browser
 - Test security gate with a repo containing a known leaked key pattern
+
+## Known Pitfalls (from prior Loki runs)
+
+- **Loki is literal about testing** — this project has no `npm test`. Verify the skill works by:
+  1. Checking SKILL.md parses correctly (valid markdown frontmatter + command routing)
+  2. Opening `portal/index.html` in browser — it must render with just `open index.html`
+  3. Verifying `reports.json` has valid JSON structure
+- **Single HTML file with CDN imports** — Tailwind CDN + Alpine.js work from `file://` protocol.
+  No build step, no server required. Test with `open ~/.local/share/lab-rat/portal/index.html`
+- **Portal CORS** — If the portal reads `reports.json` via fetch(), `file://` protocol blocks it.
+  Use inline data or `<script>` tag to load data, NOT fetch(). This is critical.
+- **Loki often does ONE atomic commit** — first 5-10 min with no commits is normal, not a stall
+- **Manual spot-check portal** — Loki won't verify visual aesthetics or ADHD-friendliness. Always open the portal after Loki finishes
+- **Skill file locations** — SKILL.md + ref/ go in THIS repo (`~/workplace/lab-rat/`), NOT directly in `~/.claude/skills/lab-rat/`. User promotes manually via symlink after review

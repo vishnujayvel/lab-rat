@@ -230,6 +230,19 @@
                 </div>
               </div>
 
+              <!-- Traction Signals -->
+              <div class="flex items-center gap-3 text-xs mb-3" x-show="report.traction">
+                <span class="text-gray-400" x-show="report.traction?.stars != null">&#11088; <span x-text="formatNumber(report.traction?.stars)"></span></span>
+                <span :class="commitRecencyClass(report.traction?.last_commit)" x-show="report.traction?.last_commit">
+                  <span x-text="formatRecency(report.traction?.last_commit)"></span>
+                </span>
+                <span x-show="report.traction?.downloads_weekly" class="text-gray-400">
+                  &#128230; <span x-text="formatNumber(report.traction?.downloads_weekly)"></span>/wk
+                </span>
+                <span x-show="report.traction?.license" class="text-gray-500" x-text="report.traction?.license"></span>
+                <span x-show="report.traction?.language" class="text-gray-500" x-text="report.traction?.language"></span>
+              </div>
+
               <!-- Liked / Disliked Tags -->
               <div class="flex flex-wrap gap-1.5 mb-1" x-show="report.liked.length > 0 || report.disliked.length > 0">
                 <template x-for="tag in report.liked" :key="'like-' + tag">
@@ -477,6 +490,40 @@
             reference: 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
           };
           return map[verdict] || 'bg-slate-700 text-gray-400';
+        },
+
+        formatNumber(n) {
+          if (n == null) return '—';
+          if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+          if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+          return String(n);
+        },
+
+        formatRecency(dateStr) {
+          if (!dateStr) return '—';
+          const now = new Date();
+          const then = new Date(dateStr);
+          const diffMs = now - then;
+          const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+          if (diffDays < 1) return 'today';
+          if (diffDays === 1) return '1d ago';
+          if (diffDays < 7) return diffDays + 'd ago';
+          const diffWeeks = Math.floor(diffDays / 7);
+          if (diffWeeks < 5) return diffWeeks + 'w ago';
+          const diffMonths = Math.floor(diffDays / 30);
+          if (diffMonths < 12) return diffMonths + 'mo ago';
+          const diffYears = Math.floor(diffDays / 365);
+          return diffYears + 'y ago';
+        },
+
+        commitRecencyClass(dateStr) {
+          if (!dateStr) return 'text-gray-500';
+          const now = new Date();
+          const then = new Date(dateStr);
+          const diffDays = Math.floor((now - then) / (1000 * 60 * 60 * 24));
+          if (diffDays <= 7) return 'text-green-400';
+          if (diffDays <= 30) return 'text-amber-400';
+          return 'text-gray-500';
         },
 
         formatTime(isoString) {

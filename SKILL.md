@@ -259,6 +259,46 @@ mcp__github__get_file_contents(owner="<owner>", repo="<repo>", path="SKILL.md")
 Not all files will exist — that is expected. Read what is available. Also check the repo's
 primary language, star count, and recent commit activity if visible from metadata.
 
+#### Step 2.5: Collect Traction Signals
+
+Gather quantitative health signals for the repo. These populate the `traction` object on the report card.
+
+**GitHub signals (always collected):**
+
+Use `mcp__github__search_repositories(query="repo:owner/name")` to get:
+- `stars`, `forks`, `open_issues`, `language`, `license`, `created_at`
+
+Use `mcp__github__list_commits(owner, repo, per_page=1)` to get the most recent commit date → `last_commit`.
+
+Compute derived fields:
+- `stars_per_month = stars / max(1, months_since_created_at)` — where months is the number of
+  calendar months between `created_at` and today
+- `commits_30d` — if available from the API, otherwise set to `null`
+- `contributors` — if available from the API, otherwise set to `null`
+
+**Package registry downloads (when applicable):**
+
+Check which package files were found in Step 2:
+
+- If `package.json` was found: extract `name` field from the JSON, then fetch npm weekly downloads:
+  ```
+  WebFetch("https://api.npmjs.org/downloads/point/last-week/{package_name}")
+  ```
+  Parse the JSON response and set `downloads_weekly` to the `downloads` field.
+
+- If `pyproject.toml` or `setup.py` was found: extract the package name, then fetch PyPI downloads:
+  ```
+  WebFetch("https://pypistats.org/api/packages/{package_name}/recent")
+  ```
+  Parse the JSON response and set `downloads_weekly` to `data.last_week`.
+
+- If no package registry is detected, set `downloads_weekly` to `null`.
+
+**Error handling:** If any traction API call fails, set that field to `null` and continue.
+Do not fail the pipeline over missing traction data.
+
+Record `{"event": "traction_collected", "at": "<ISO timestamp>"}` in timeline.
+
 #### Step 3: Classify
 
 Assign exactly one classification based on what you found:
@@ -554,6 +594,19 @@ Every report entry in `reports.json` follows this schema:
     "findings": ["<finding description>"],
     "scanned_at": "<ISO 8601 timestamp>"
   },
+  "traction": {
+    "stars": 1240,
+    "forks": 43,
+    "open_issues": 12,
+    "last_commit": "2026-03-24",
+    "commits_30d": 47,
+    "contributors": 8,
+    "license": "MIT",
+    "language": "Rust",
+    "stars_per_month": 85,
+    "downloads_weekly": null,
+    "created_at": "2025-09-15"
+  },
   "sandbox": {
     "cloned": false,
     "deps_installed": false,
@@ -588,6 +641,8 @@ Every report entry in `reports.json` follows this schema:
 
 **Null handling:** Fields that were skipped (e.g., sandbox for reference repos) should use
 sensible defaults (false for booleans, null for timestamps, empty string for text, empty array for lists).
+Older reports without `traction` data should be handled gracefully — portal and consumers
+must treat a missing `traction` field as `null`.
 
 **source_type:** For repos discovered via `/lab explore <url>` (manual), set to `"manual"`.
 For repos from `/lab digest`, set from the adapter result. `discovery_sources` lists ALL sources
